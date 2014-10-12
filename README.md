@@ -11,30 +11,35 @@ If you want to copy this project to work on it, follow these steps:
 
 Things you will need:
 - Apache Webserver (Optional, because I use apache)
-- PHP
-- MySQL
-- Magic
+* PHP
+* MySQL
+* Some Magic
+* More Magic
+
 
 0. Clone the project in a public directory
-1. In ref/config.php, insert the path of the font in $config_captcha ('fontpath') (found at: BASEPATH/captcha/XFILES.TTF)
-2. Configure database access in sample.mysql_connect.php. When you are done, rename the file to mysql_connect.php
+1. In `ref/config.php`, insert the path of the font in `$config_captcha` ('fontpath') (found at: `BASEPATH/captcha/XFILES.TTF`)
+2. Configure database access in `sample.mysql_connect.php`. When you are done, rename the file to `mysql_connect.php`
 3. Run create_tables.php to create the tables (if you are building this project for the first time).
-4. When uploading an animation, files are moved into the files/ directory. Make sure that php has the rights to write into that directory. Same goes to nonpublic/ (for user logs)
+4. When uploading an animation, files are moved into the `files/` directory. Make sure that php has the rights to write into that directory. Same goes to `nonpublic/` (for user logs)
 
 -> And you should be ready to go :)
 
 Problems which might occur:
 
-1. Document not found error -> The project uses .htaccess files to restrict access. You can temporary comment some lines in these files. Also, make sure you set "AllowOverride All" (in case your webserver is apache2) to make .htaccess work.
+1. Document not found error -> The project uses `.htaccess` files to restrict access. You can temporary comment some lines in these files. Also, make sure you set `AllowOverride All` (in case your webserver is apache2) to make `.htaccess` work.
 
-2. ^^ -> this project uses the apache module "mod_rewrite" to modify URLs. Enable "mod_rewrite" with "sudo a2enmod rewrite" and restart your webserver. However, this module should not cause errors. When it does, please report them.
+2. ^^ -> this project uses the apache module `mod_rewrite` to modify URLs. Enable `mod_rewrite` with `sudo a2enmod rewrite` and restart your webserver. However, this module should not cause errors. When it does, please report them.
 
-3. Internal server Error: When you use the featured .htaccess files, reconfigure the path of the AuthUserFile in BASEPATH/.htaccess. You could create a .htpasswd file and place it in ascii/nonpublic/.htpasswd
-A tool for generating .htpasswd files is located [here](http://www.htaccesstools.com/htpasswd-generator/)  
+3. Internal server Error: When you use the featured .htaccess files, reconfigure the path of the `AuthUserFile` in `BASEPATH/.htaccess`. You could create a `.htpasswd` file and place it in `nonpublic/.htpasswd`
+
+A tool for generating `.htpasswd` files is located [here](http://www.htaccesstools.com/htpasswd-generator/)  
 
 ##Known Bugs/Problems:
 
-- Firefox reads strings in data:text/plain just until the char '#' when saving an animation. Published a workaround. Check the filesize each time you create an animation using firefox.
+- Firefox reads strings in `data:text/plain` just until the char '#' when saving an animation. Published a workaround. Check the filesize each time you create an animation using firefox.
 
 ##Contributing and Credit
 Font by: http://www.dafont.com/de/xfiles1.font
+
+Project by tomatenbrei
