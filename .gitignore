@@ -1,5 +1,12 @@
 # nonpublic dir content
+
 nonpublic/*
+!nonpublic/.gitkeep
+
 ref/mysql_connect.php
+
 files/*
+!files/.gitkeep
+
+*~
 
