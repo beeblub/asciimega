@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<script src="playanimation.js"></script> 
+</head>
+
+<body>
+<input type="button" name="derButton" value="play" onclick="play();">
+<input type="button" name="derButton" value="stop" onclick="stop();">
+<input type="button" name="derButton" value="reset" onclick="reset();">
+<br>
+<code style="display: inline-block;" id="animation_wrapper"></code>
+<div id="animation_info">
+</div>
+<script type="text/javascript">
+function supports_html5_storage() {
+	  try {
+	    return 'localStorage' in window && window['localStorage'] !== null;
+	  } catch (e) {
+	    return false;
+	  }
+	}
+function animation_from_local_storeage()
+{
+	if (supports_html5_storage()) {
+	  var movdat_tmp = window.localStorage.getItem("animationplain");
+	  var movdat = movdat_tmp.split('\\n').slice();
+          load_animation(movdat,true,false);
+	  play();
+	} else {
+		alert("No html5 storeage support!");
+	}
+
+	
+}
+animation_from_local_storeage()
+</script>
+</body>
+</html>

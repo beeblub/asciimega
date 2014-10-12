@@ -1,0 +1,5 @@
+# nonpublic dir content
+nonpublic/*
+ref/mysql_connect.php
+files/*
+

@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<script type="text/javascript">
+var unloadCheck = true;
+window.onbeforeunload = function() {
+    if (unloadCheck) {
+        return "You";
+    } else {
+        return;
+    }
+}
+</script>
+<script type="text/javascript">
+
+//######################################################
+//# Author: tomatenbrei, Contact: tomadroide@gmail.com #
+//######################################################
+
+//-----------------------
+//TO-DO:
+//Frame Extra (Farbe,Zeit) MUSS noch in den Editor integriert werden. Aktuell nur per Hand möglich.
+//-----------------------
+
+
+//Die Textarea zum Darstellen des aktuellen Frames
+var textarea = null;
+
+//Breite und Höhe der Animation
+var movx = 35;
+var movy = 10;
+
+//Hier werden die Frames gespeichert
+var frames = [];
+//Diese Wrapper halten die Frames der Übersicht
+var inviswrappers = [];
+
+var currframe = 0;
+
+var frametime = 300;
+var autoloop = true;
+
+var frames_coltimdat = [];
+
+function reset()
+{
+	textarea.value = frames[currframe];
+	create_log("Reset all characters of current frame. ("+currframe+")");
+}
+
+function create_log(str)
+{
+	console.log(str);
+}
+
+function fill_with_spaces()
+{
+	var tmpstring = "";
+	for(var i = 0;i<movx;i++)
+		tmpstring+=" ";
+	textarea.value = "";
+	for(var i = 0;i<movy;i++)
+		if(i != movy-1)
+		textarea.value+=tmpstring+"\n";
+		else
+		textarea.value+=tmpstring;
+}
+//Speichervorgang von der textarea aus
+function save()
+{
+	result_plain = textarea.value;
+	var coltimdat = input_coltimdat_get();
+	save_frame(result_plain,coltimdat);
+}
+function remove_current()
+{
+	remove_frame(currframe);
+}
+function remove_frame(frameid)
+{
+	create_log("Removing frame nr. "+frameid);
+	var toremove = frameid;
+	var length = frames.length;
+	if(toremove < length)
+	{
+
+		frames_coltimdat.splice(toremove, 1);
+
+		for(var i = toremove;i<(length-1);i++)
+		{
+			//alert("Saving "+(i+1)+" over "+i);
+			save_frame_by_id(frames[i+1],i);
+		}
+		//remove last
+		var inviswrapperdiv = inviswrappers[length-1];
+		//while(inviswrapperdiv.firstChild)
+		//	inviswrapperdiv.removeChild(inviswrapperdiv.firstChild);
+		var wrapper = document.getElementById("create_history");
+		wrapper.removeChild(inviswrapperdiv);
+		inviswrappers.splice(length-1, 1);
+		frames.splice(length-1, 1);
+	
+		var editframe = frameid;
+
+		if(frameid >= frames.length)
+			 editframe = frames.length-1;
+		if(editframe < 0)
+			editframe = 0;
+		create_log("done.");
+		edit(editframe);
+	}
+	else
+	{
+		create_log("Cannot remove frame nr. "+frameid+" because it does not exist.");
+	}
+}
+var coltimdat_lastcolf = "";
+var coltimdat_lastcolb = "";
+function input_coltimdat_get()
+{
+	var retstr = "";
+	var tmptime = document.getElementById("input_coltimdat_t").value;
+	var tmpcolf = document.getElementById("input_coltimdat_cf").value;
+	var tmpcolb = document.getElementById("input_coltimdat_cb").value;
+
+	if(tmptime != "")
+	{
+		var tmptime_int = parseInt(tmptime) || -1;
+		if(tmptime > 0)
+			retstr += tmptime+".";
+	}
+	
+	if(tmpcolf != "" && tmpcolb != "")
+	{
+		//farbwerte werden mit preview überschrieben. Trick: preview nimmt nur gültige werte oder keinen an
+		tmpcolf = document.getElementById("input_coltimdat_cf_preview").style.backgroundColor;
+	        tmpcolb = document.getElementById("input_coltimdat_cb_preview").style.backgroundColor;
+
+		if(tmpcolf != "" && tmpcolb != "")
+		{
+			retstr += tmpcolb+":"+tmpcolf+":";
+		
+			coltimdat_lastcolf = tmpcolf;
+			coltimdat_lastcolb = tmpcolb;
+		}
+	}
+	else
+	{
+		coltimdat_lastcolf = "";
+	        coltimdat_lastcolb = "";
+	}
+
+	return retstr;
+}
+function input_coltimdat_reset(coltimdat)
+{
+	var etmptime = document.getElementById("input_coltimdat_t");
+	var etmpcolf = document.getElementById("input_coltimdat_cf");
+	var etmpcolb = document.getElementById("input_coltimdat_cb");
+
+	//alert(coltimdat);
+	coltimdat = (typeof coltimdat === 'undefined') ? "" : coltimdat;
+	
+	if(coltimdat == "")
+	{
+		etmptime.value = "";
+		etmpcolf.value = "";
+		etmpcolb.value = "";
+	}
+	else
+	{
+		var tmptime = "";
+		var tmpcolf = "";
+		var tmpcolb = "";
+
+		var buffer = "";
+		
+		for(var i = 0;i<coltimdat.length;i++)
+		{
+			var tmpcurrchar = coltimdat.charAt(i);
+			if(tmpcurrchar == '.')
+			{
+				tmptime = buffer;
+				buffer = "";
+			}
+			else if(tmpcurrchar == ':')
+			{
+				//back ist zuerst.. statt nem counter prüfen wir einfach, ob schon ein Wert existiert
+				if(tmpcolb != "")
+				{
+					tmpcolf = buffer;
+					buffer = "";
+				}
+				else
+				{
+					tmpcolb = buffer;
+					buffer = "";
+				}
+			}
+			else
+			{
+				buffer += tmpcurrchar;
+			}
+		}
+
+		if(tmptime != "")
+			etmptime.value = tmptime;
+		else
+			etmptime.value = "";
+
+		if(tmpcolf != "" && tmpcolb != "")
+		{
+			etmpcolf.value = tmpcolf;
+			etmpcolb.value = tmpcolb;
+
+			coltimdat_lastcolf = tmpcolf;
+			coltimdat_lastcolb = tmpcolb;
+		}
+		else
+		{
+			etmpcolf.value = "";
+			etmpcolb.value = "";
+		}
+	}
+}
+//generelles speichern
+function save_frame(res_pl,coltimdat)
+{
+	save_coltimdat_by_id(coltimdat,currframe);
+	if(save_frame_by_id(res_pl,currframe))
+	{
+		//alert(frames_coltimdat);
+
+		if(currframe+1 < frames.length)
+		{
+			edit(currframe+1);
+		}
+		else
+		{
+			create_new();
+		}
+		
+		update_create_information();
+	}
+}
+function save_coltimdat_by_id(extra,frameid)
+{
+	//noch keine Bedingungen..
+	frames_coltimdat[frameid] = extra;
+}
+function save_frame_by_id(res_pl,frameid)
+{
+	result_plain = res_pl;
+	result = res_pl.split('\n');
+
+	var incorrect = false;
+	var incorrect_information;
+
+	if(result.length < movy)
+	{
+		var diff = movy-result.length;
+		for(var i = 0;i<diff;i++)
+		{
+			result.push("");
+			result_plain += "\n";
+		}
+	}
+
+	if(result.length != movy)
+	{
+		incorrect = true;
+		incorrect_information = "Invalid amout of lines. Your format states "+movy +" lines. You have "+result.length;
+	}
+	else
+	{
+	for(var i = 0;i<result.length;i++)
+	{	
+		var tmp = result[i];
+		//!= 
+		if(tmp.length > movx)
+		{
+			incorrect = true;
+			incorrect_information = "Line number "+(i+1) +" is invalid ("+ tmp.length+" characters). Its length should be "+movx; 
+			break;
+		}
+		else
+		{
+			if(tmp.length >= 2)
+			for(var j = 0;j<tmp.length-1;j++)
+				if(tmp.charAt(j) == '\\' && tmp.charAt(j+1) == 'n')
+				{
+					incorrect = true;
+					incorrect_information = "A frame must not contain the sequence \"\\n\".";
+				}
+		}
+	}
+	}
+
+	if(incorrect)
+	{
+		alert(incorrect_information);
+
+		create_log("Error: "+incorrect_information);
+		return false;
+	}
+	else
+	{
+		frames[frameid] = result_plain;
+		
+		var wrapper = document.getElementById("create_history");
+	
+		var content = frames[frameid];
+		content = content.split('\n');
+
+		var inviswrapperdiv = null;
+		if(!inviswrappers[frameid])
+		{
+			inviswrapperdiv = document.createElement('div');
+			inviswrappers[frameid] = inviswrapperdiv;
+			inviswrapperdiv.style.display = "inline-block";
+			inviswrapperdiv.style.display = "10px";
+			inviswrapperdiv.style.display = "10px";
+			wrapper.appendChild( inviswrapperdiv );
+
+			create_log("Creating frame number "+frameid);
+		}
+		else
+		{
+			inviswrapperdiv = inviswrappers[frameid];
+
+			create_log("Updating frame number "+frameid);
+
+			while(inviswrapperdiv.firstChild)
+	    			inviswrapperdiv.removeChild(inviswrapperdiv.firstChild);
+		}
+
+		var wrapperdiv = document.createElement('div');
+		inviswrapperdiv.appendChild(wrapperdiv);
+		wrapperdiv.style.backgroundColor = "white";
+		wrapperdiv.style.margin = "10px";
+		wrapperdiv.style.padding = "10px";
+		
+		for(var i = 0;i<movy;i++)
+		{
+			var lineText = content[i];
+			if( !lineText || lineText.length < 1 )
+				lineText = ' ';
+
+			var div = document.createElement('div');
+			div.style.whiteSpace = 'pre';
+			div.appendChild( document.createTextNode( lineText ));
+
+			wrapperdiv.appendChild( div );
+		}
+		var a = document.createElement('a');
+		var linkText = document.createTextNode("Frame "+frameid);
+		a.appendChild(linkText);
+		a.style = "color:white;text-align:center;"
+		a.title = "Frame "+frameid;	
+		a.onclick= new Function("edit("+frameid+")");
+
+		a.href="javascript:void(0)";
+		
+		inviswrapperdiv.appendChild(a);
+
+		//alert("saving frame number "+frameid+" framecoldat:"+frames_coltimdat[frameid]);
+		if(frames_coltimdat[frameid] != "")
+		{
+			//alert("Frame id: "+frameid+ " -- " + frames_coltimdat[frameid]);
+			input_coltimdat_reset(frames_coltimdat[frameid]);
+			//alert("not tothing!");
+			var cdiv_f = document.createElement('div');
+			cdiv_f.style.top ="5px";
+			cdiv_f.style.width="100%";
+			cdiv_f.style.height="20px";
+			cdiv_f.style.position="relative";
+			cdiv_f.style.backgroundColor=coltimdat_lastcolb;
+			//alert(coltimdat_lastcolf);
+			var cdiv_b = document.createElement('div');
+			cdiv_b.style.width="100%";
+			cdiv_b.style.height="20px";
+			cdiv_b.style.position="relative";
+			cdiv_b.style.backgroundColor=coltimdat_lastcolf;
+			inviswrapperdiv.appendChild(cdiv_f);	
+			inviswrapperdiv.appendChild(cdiv_b);
+		}
+		
+		create_log(".. done.");
+
+		return true;
+	}
+		
+}
+//Einen Frame bearbeiten
+var lasteditwrapper = null;
+function currframe_move(frameid)
+{
+	currframe = frameid;
+
+	if(lasteditwrapper != null)
+	{
+		lasteditwrapper.style.backgroundColor = "";
+	}
+	if(inviswrappers[frameid] != null)
+	{
+		inviswrappers[frameid].style.backgroundColor = "black";
+		lasteditwrapper = inviswrappers[frameid];
+	}
+	else
+	{
+		lasteditwrapper = null;
+	}
+}
+
+
+function edit(frameid)
+{
+	currframe_move(frameid);
+	if(frameid < frames.length)
+		textarea.value = frames[frameid];
+	
+	input_coltimdat_reset(frames_coltimdat[frameid]);
+
+	setpreviewdivcolors();
+
+	update_create_information();
+	create_log("Editing frame number "+frameid);
+}
+function update_create_information()
+{
+	var wrapper = document.getElementById("create_information");
+	wrapper.innerHTML = "current frame: "+currframe;
+}
+//Verschiebt nur die Zeiger-Position
+function create_new()
+{
+	currframe_move(frames.length);
+	input_coltimdat_reset("");
+	update_create_information();
+	create_log("Setting current frame to "+currframe);
+}
+function supports_html5_storage() {
+  try {
+    return 'localStorage' in window && window['localStorage'] !== null;
+  } catch (e) {
+    return false;
+  }
+}
+function get_frametime()
+{
+	var strnumb = document.getElementById("input_frametime").value;
+	numb = parseInt(strnumb) || -1;
+	//alert(numb);
+	if(numb < 1)
+		numb = -1;
+	if(numb > 100000)
+		numb = 100000;
+	return numb;
+}
+function getHex(str) {
+    var bytes = [];
+    for(var i = 0, n = str.length; i < n; i++) {
+        var char = str.charCodeAt(i);
+        bytes.push(char >>> 8, char & 0xFF);
+    }
+    var hexstring = "";
+    for(var i = 0;i<bytes.length;i++)
+    {
+	hexstring += bytes[i]+" "
+    }
+    return hexstring;
+}
+var str_out = "";
+function save_animation()
+{
+	var wrapper = document.getElementById("create_output");
+
+	var forcestop = false;
+	var forcestop_msg = "";
+	
+	var time1 = performance.now();
+	str_out = "";
+	wrapper.innerHTML = "";
+	str_out += "Header\\n";
+	str_out += "Width\\n";
+	str_out += movx+"\\n";
+	str_out += "Height\\n";
+	str_out += movy+"\\n";
+	str_out += "Frametime\\n";
+	var ftime = get_frametime();
+	if(ftime == -1)
+	{
+		forcestop = true;
+		forcestop_msg = "No valid frametime.";
+	}
+	str_out += ftime+"\\n";
+	str_out += "Autoloop\\n";
+	var fautoloop = document.getElementById("input_autoloop").checked;
+	autoloop = fautoloop;
+	str_out += autoloop+"\\n";
+	str_out += "ColTimDat\\n";
+	var coltimstring = "";	
+	for(var i = 0;i< frames_coltimdat.length;i++)
+	{
+		var tmpctd = frames_coltimdat[i];
+		if(tmpctd != "")
+			coltimstring+=i+";"+tmpctd;
+	}
+	str_out += coltimstring+"\\n";
+	str_out += "Header End\\n";
+	if(forcestop == false)
+	{
+	for(var i = 0;i<frames.length;i++)
+		str_out += (frames[i]).replace(/\n/g, "\\n")+"\\n";
+
+	var time2 = performance.now();
+	wrapper.innerHTML += "<br> Rendering took "+(time2-time1)+" milliseconds. <br>You can download your file now.<br>";
+	create_log("Rendered a link for saving the animation locally");
+
+	wrapper.innerHTML += "<br><a download='animation.txt' style='color:blue;' id='link_saveanimation' href=''>Download</a>";
+	//workaround for characters ' and "
+	var thehref = "data:text/plain,"+str_out;
+	
+	document.getElementById("link_saveanimation").href = thehref;
+	
+	wrapper.innerHTML += "<br><font style='color:red;'>Please check whether the size of your download is "+str_out.length+" Bytes.</font> <br><font style='font-size:xx-small;'>Otherwise copy the URL (NOT THE CONTENT ON THE WEBSITE) of this here (everything after \"data:text/plain,\"):<a style='color:blue;' id='link_saveanimation2' target='_blank' onclick=\"this.onclick='';this.href='data:text/plain,COPY HERE>>'+str_out;\" href='javascript:void(0);'>Create</a></font>";
+
+	if (supports_html5_storage()) {
+	  // window.localStorage is available!
+	  window.localStorage.setItem("animationplain",str_out);
+	  wrapper.innerHTML += "<br><br>Watch the preview:<br>";
+	  wrapper.innerHTML += "<center><iframe width='720' height='400' src='embet.php?a=%local' allowFullScreen></iframe></center>";
+	  wrapper.innerHTML += "<br>Or click at <a style='color:blue;' target='_blank' href='embet?a=%local'>Play</a> to play the animation in a seperate Tab.";
+	} else {
+	  //...noooope
+	}
+	}
+	else
+	{
+		alert("Header Error: "+forcestop_msg);
+		create_log("Header Error: "+forcestop_msg);
+	}
+}
+function save_tons()
+{
+	for(var i = 0;i<100;i++)
+		save();
+}
+function load()
+{
+	create_log("Loading Tools");
+	var wrapper = document.getElementById("create_wrapper");
+	while(wrapper.firstChild)
+	    	wrapper.removeChild(wrapper.firstChild);
+	
+        textarea = document.createElement("textarea"); 
+	textarea.rows = movy;
+	textarea.cols = movx;
+	var tmpstring = "";
+	for(var i = 0;i<movx;i++)
+		tmpstring+="X";
+	textarea.value = "";
+	for(var i = 0;i<movy;i++)
+		if(i != movy-1)
+		textarea.value+=tmpstring+"\n";
+		else
+		textarea.value+=tmpstring;
+	wrapper.appendChild(textarea);
+	
+	currframe_move(0);
+	update_create_information();
+	create_log("Ready.");
+}
+
+function readheader(arr)
+{
+	var h = arr[0];
+	if(h == "Header")
+	{
+		//alert("header exists");
+		var buffer = "NONE";
+		var indx = 1;
+		var crntmode = 0;
+
+
+		var width = 0;
+		var height = 0;
+	
+		buffer = arr[indx];
+		var notcorrect = false;
+		while(buffer != "Header End")
+		{
+			//alert(buffer+":"+crntmode);
+			if(notcorrect)
+				break;
+			if(crntmode == 0)
+			{
+				switch(buffer) {
+				    case "Width":
+					{crntmode = 1;break;}
+					
+				    case "Height":
+					{crntmode = 2;break;}
+	
+				    case "Frametime":
+					{crntmode = 3;break;}
+
+				    case "Autoloop":
+					{crntmode = 4;break;}
+
+				    case "ColTimDat":
+					{crntmode = 5;break;}
+					
+				    default:
+					break;
+				} 
+			}
+			else
+			{
+				switch(crntmode) {
+				    case 1:
+					{movx = parseInt(buffer) || null;break;}
+					
+				    case 2:
+					{movy = parseInt(buffer) || null;break;}
+
+				    case 3:
+					{frametime = parseInt(buffer) || null;break;}
+				
+				    case 4:
+					{if(buffer == "true"){autoloop = true;}else if(buffer == "false"){autoloop = false;}else {notcorrect = true;}break;}
+				    case 5:
+					{
+						//buffer is coltimdat!
+						//alert(buffer);
+						var numframe = 0;
+						frames_coltimdat = [];
+						var tmpbuffer = "";
+						for(var i =0;i<buffer.length;i++)
+						{
+							var currchar = buffer.charAt(i);
+							if(currchar == ";" || i == buffer.length-1)
+							{
+								if(i == buffer.length-1)
+									tmpbuffer += currchar;
+								var tmpsum_time = 0;
+								var tmpsum_color = 0;
+								var lastpos = 1;
+								for(var j = 0;j<tmpbuffer.length;j++)
+								{
+									var currchar2 = tmpbuffer.charAt(j);
+									if(currchar2 == ':')
+									{
+										tmpsum_color += 1;
+										lastpos = j;
+									}
+									else if(currchar2 == '.')
+									{
+										tmpsum_time += 1;
+										lastpos = j;
+									}
+								}
+								//alert(tmpsum_time+tmpsum_color);
+								if((tmpsum_color == 0  || tmpsum_color == 2) && (tmpsum_time == 1 || tmpsum_time == 0) && tmpsum_color+tmpsum_time>0)
+								{
+									//wird bis "lastpos" gespeichert. Alles nach lastpos bleibt in tmpbuffer..
+									if(frames_coltimdat.length < numframe-1)
+									for(var j = 0;j<(numframe)-(frames_coltimdat.length)+2;j++)
+										frames_coltimdat.push("");
+									//alert("adding "+tmpbuffer.substr(0,lastpos+1)+ " at " +numframe);
+									frames_coltimdat.push(tmpbuffer.substr(0,lastpos+1));
+									tmpbuffer = tmpbuffer.substr(lastpos+1);
+								}
+								//alert(tmpbuffer);
+								numframe = parseInt(tmpbuffer);
+								tmpbuffer = "";
+							}
+							else
+							{
+								tmpbuffer += currchar;
+							}
+						}						
+
+						
+						//alert(frames_coltimdat.length);
+						
+						break;
+					}
+
+				    default:
+					break;}
+				crntmode = 0;
+			}
+			
+			indx++;
+			if(indx < arr.length)
+				buffer = arr[indx];
+			else
+			{
+				
+				notcorrect = true;
+				break;
+			}
+		}
+		indx++;
+
+		if(movx == null || movy == null || frametime == null || autoloop == null)
+			notcorrect = true;
+		
+
+		if(notcorrect)
+		{
+			alert("Header not correct");
+			framenum = 0;
+		}
+		else
+		{
+			//alert("Header: "+movx+":"+movy+" -- time:"+frametime+ " -autoloop:"+autoloop);
+			framenum = (arr.length - indx-1)/movy;
+			arr.splice(0,indx);
+			
+			document.getElementById("input_autoloop").checked = autoloop;
+			document.getElementById("input_frametime").value = frametime;
+
+			console.log('alert '+movy);
+		}
+	}
+}
+//Lädt von String 
+function load_from_string(str)
+{
+	for(var i = frames.length-1;i>=0;i--)
+	{
+		remove_frame(i);
+	}
+	frames =  [];
+	frames_coltimdat = [];
+
+	load();
+	//load header...
+	//end load header
+	create_log("Loading animation from file.");
+	frames_single = str.split('\\n');
+	
+	readheader(frames_single);
+	//alert(frames_single);	
+	//alert(movx+","+movy);
+	var numframes = (frames_single.length-1) / movy;
+	//alert(frames_single);
+	//alert(frames_coltimdat.length+","+numframes);
+	var difference = parseInt((numframes)-(frames_coltimdat.length));
+	if(difference > 0)
+	{
+		//alert("numframes larger..");
+		for(var i = 0;i<difference;i++)
+		{
+			//alert(i);
+			frames_coltimdat.push("");
+		}
+		//alert(numframes+","+frames_coltimdat.length);
+	}
+	//alert(frames_coltimdat.length+","+numframes);
+	var yoffset = 0;
+	for(var i = 0;i<numframes;i++)
+	{
+		var tmpframe = "";
+		for(var j = yoffset;j<movy+yoffset;j++)
+		{
+			if(j == movy+yoffset-1)
+			tmpframe += frames_single[j];
+			else 
+			tmpframe += frames_single[j]+"\n";
+		}
+		yoffset+=movy;
+		frames[i] = tmpframe;
+		save_frame_by_id(frames[i],i);
+		//save_frame(frames[i]);
+	}
+	//for(var j = 0;j<numframes;j++)
+	//	frames_coltimdat.push("");
+
+	create_log("Finished loading.");
+	
+	edit(numframes-1);
+	show_tools();
+
+	//alert(frames_coltimdat);
+	//alert("hello2");
+	//alert(str+":"+frames_single+":"+frames);
+}
+function readSingleFile(evt) {
+    //Retrieve the first (and only!) File from the FileList object
+    var f = evt.target.files[0]; 
+
+    if (f) {
+      var r = new FileReader();
+      r.onload = function(e) { 
+	      var contents = e.target.result;
+        create_log( "File selected." 
+              +" name: " + f.name 
+              +" type: " + f.type 
+              +" size: " + f.size + " bytes");
+	load_from_string(contents);  
+      }
+      
+      r.readAsText(f);
+      //load_from_string(contents);
+      //ende des ladevorgangs
+    } else { 
+      alert("Failed to load file");
+    }
+  }
+function show_tools()
+{
+	document.getElementById("create_editor").style.display= "";
+	document.getElementById("create_start").style.display= "none";
+}
+function start_edit()
+{
+	movx = parseInt(document.getElementById("input_movx").value) || null;
+	movy = parseInt(document.getElementById("input_movy").value) || null;
+	
+	var tmplogmsg = "";
+
+	if(movy == null || movy == null)
+	{
+		tmplogmsg = "Please enter numbers only.";
+		create_log(tmplogmsg);
+		alert(tmplogmsg);
+	}
+	else
+	{
+		if(movx <= 0 || movy <= 0)
+		{	
+			tmplogmsg = "Dimensions cannot be smaller than 0.";
+			create_log(tmplogmsg);
+			alert(tmplogmsg);
+		}
+		else if(movx*movy > 10000)
+		{
+			tmplogmsg = "The max image size is 10\'0000.";
+			create_log(tmplogmsg);
+			alert(tmplogmsg);
+		}
+		else
+		{
+			show_tools();
+			load();
+			input_coltimdat_reset("white:black:");
+			setpreviewdivcolors();
+		}
+	}
+}
+function setpreviewdivcolors()
+{
+	setpreviewdivcolor(true);
+	setpreviewdivcolor(false);
+}
+function setpreviewdivcolor(foreground)
+{
+	if(foreground)
+		document.getElementById("input_coltimdat_cf_preview").style.backgroundColor = document.getElementById("input_coltimdat_cf").value;
+	else
+		document.getElementById("input_coltimdat_cb_preview").style.backgroundColor = document.getElementById("input_coltimdat_cb").value;
+}
+
+</script>
+</head>
+<body>
+<div id="create_start" style="padding:10px;">
+<br>
+<center><i>Creating an animation, saving and playing it back is performed completely offline.<br>You do not have to fear any tracking or recognition of your unfinished work.<br>Not even when you play it back in the player.</i></center><br>
+<br>
+Create new Animation with:<br><br>
+<input type="text" size="5" maxlength="3" name="in_movx" id="input_movx" value="3"> columns and<br>
+<input type="text" size="5" maxlength="3" name="in_movy" id="input_movy" value="3"> rows.
+<input type="button" name="derButton" value="start editing" onclick="start_edit();">
+</div>
+<div id="create_editor" style="text-align:center;display: none;">
+Editing:
+<pre  id="create_wrapper">
+</pre>
+
+<input type="button" name="derButton" value="fill with spaces" onclick="fill_with_spaces();">
+<input type="button" name="derButton" value="save frame" onclick="save();">
+<!--<input type="button" name="derButton" value="save tons of frames" onclick="save_tons();">-->
+<input type="button" name="derButton" value="reset frame" onclick="reset();">
+<input type="button" name="derButton" value="remove frame" onclick="remove_current();">
+<input type="button" name="derButton" value="move pointer to create new frame" onclick="create_new();">
+<br><br>
+<div id="create_information">
+</div>
+<pre  id="create_history" style="text-align:left;background-color:gray;overflow-x:scroll;overflow-y:hidden;padding:5px;">
+</pre>
+
+<div style="display:inline-block;background-color:#cccccc;padding:10px;margin:10px;-webkit-box-shadow: 7px 7px 7px black;-moz-box-shadow: 7px 7px 7px black;box-shadow: 7px 7px 7px black;">
+<table cellspacing="40" border="0" width="100%">
+<tr>
+<td style="text-align:right;" width="50%">
+General Settings:
+</td>
+<td style="text-align:left;" width="50%">
+Frame-Specific Settings:
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Time for each frame:
+<input type="text" size="5"name="in_frametime" id="input_frametime" value="300"> ms<br>
+Automatically loop the animation <input type="checkbox" name="in_autoloop" id="input_autoloop" value="autoloop">
+</td>
+<td style="text-align:left;">
+<i>Time Key:</i><input type="text" size="3"name="in_coltimdat" id="input_coltimdat_t" value=""> ms<br><br>
+<i>Color Keys:</i> <br>
+<div style="display:inline-block;width:40px;height:40px;" id="input_coltimdat_cb_preview"></div>Background:<input type="text" size="5"name="in_coltimdat" onkeyup="setpreviewdivcolor(false);" id="input_coltimdat_cb" value=""><br>
+<div style="display:inline-block;width:40px;height:40px;" id="input_coltimdat_cf_preview"></div>Foreground:<input type="text" size="5"name="in_coltimdat" onkeyup="setpreviewdivcolor(true);"id="input_coltimdat_cf" value=""><br>
+</td>
+</tr>
+</table>
+</div>
+<br>
+
+Render the animation to save it or to take a look at your progress<br><br>
+<input type="button" name="derButton" value="Render animation" onclick="save_animation();">
+<div id="create_output">
+</div>
+</div>
+<hr>
+<br>
+<div style="padding:10px;">
+Load Animation From Local File (no upload)<br><br>
+<input type="file" id="fileinput" />
+</div>
+<br>
+<br>
+<hr>
+<div style="background-color:gray;">
+Upload (only after you saved): <a href="upload">upload</a><br>
+Delete: <a href="remove">delete</a><br>
+</div>
+<script type="text/javascript">
+  document.getElementById('fileinput').addEventListener('change', readSingleFile, false);
+</script>
+</body>
+</html>
