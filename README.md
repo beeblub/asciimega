@@ -17,11 +17,11 @@ Things you will need:
 * More Magic
 
 
-0. Clone the project in a public directory
-1. In `ref/config.php`, insert the path of the font in `$config_captcha` ('fontpath') (found at: `BASEPATH/captcha/XFILES.TTF`)
-2. Configure database access in `sample.mysql_connect.php`. When you are done, rename the file to `mysql_connect.php`
-3. Run create_tables.php to create the tables (if you are building this project for the first time).
-4. When uploading an animation, files are moved into the `files/` directory. Make sure that php has the rights to write into that directory. Same goes to `nonpublic/` (for user logs)
+1. Clone the project in a PRIVATE directory (git dir). Now Copy/Override the project in a public directory (test dir). Only use the git dir for uploading/downloading stuff. Not for testing. The version management of git will delete the animations etc. otherwise each time you commit.
+2. In `ref/config.php`, insert the path of the font in `$config_captcha` ('fontpath') (found at: `BASEPATH/captcha/XFILES.TTF`)
+3. Configure database access in `sample.mysql_connect.php`. When you are done, rename the file to `mysql_connect.php`(if you are building this project for the first time).
+4. Run create_tables.php to create the tables (if you are building this project for the first time).
+5. When uploading an animation, files are moved into the `files/` directory. Make sure that php has the rights to write into that directory. Same goes to `nonpublic/` (for user logs)
 
 -> And you should be ready to go :)
 
