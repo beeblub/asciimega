@@ -11,6 +11,6 @@ $config_track = array (
 );
 $config_captcha = array(
    //THE ABSOLUTE PATH TO THE FONT!
-  'fontpath' => "/var/www/html/ascii/captcha/XFILES.TTF"
+  'fontpath' => "/var/www/html/asciimega/captcha/XFILES.TTF"
 );
 ?>

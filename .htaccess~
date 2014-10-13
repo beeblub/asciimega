@@ -1,13 +1,12 @@
 #auth (you can comment that for local testing)
 AuthType Basic
 AuthName "Please authenticate yourself to enter."
-AuthUserFile /var/www/html/ascii/nonpublic/.htpasswd
+AuthUserFile /var/www/html/asciimega/nonpublic/.htpasswd
 require valid-user
 #end auth
 
 #uncomment
 #Allow from all
-
 
 Options +FollowSymLinks -MultiViews
 # Turn mod_rewrite on
