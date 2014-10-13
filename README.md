@@ -35,9 +35,9 @@ Problems which might occur:
 
 A tool for generating `.htpasswd` files is located [here](http://www.htaccesstools.com/htpasswd-generator/)  
 
-##Known Bugs/Problems:
+##Current Progress:
 
-- Firefox reads strings in `data:text/plain` just until the char '#' when saving an animation. Published a workaround. Check the filesize each time you create an animation using firefox.
+Check out the [wiki](https://github.com/tomatenbrei/asciimega/wiki/)
 
 ##Contributing and Credit
 Font by: http://www.dafont.com/de/xfiles1.font
