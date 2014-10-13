@@ -7,6 +7,7 @@ nonpublic/*
 !nonpublic/.gitkeep
 
 ref/mysql_connect.php
+ref/config.php
 
 files/*
 !files/.gitkeep
