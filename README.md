@@ -48,9 +48,11 @@ Check out the [wiki](https://github.com/tomatenbrei/asciimega/wiki/)
 Font by: http://www.dafont.com/de/xfiles1.font
 
 Project Idea by tomatenbrei
+
 I'd love when you'd contribute to this project in any way.
 
 Contributors so far:
-- tomatenbrei
+- [tomatenbrei](https://github.com/tomatenbrei)
+- [beeblub](https://github.com/beeblub)
 
 
