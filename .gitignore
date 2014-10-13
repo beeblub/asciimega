@@ -1,3 +1,6 @@
+#temp files
+*~
+
 # nonpublic dir content
 
 nonpublic/*
@@ -7,6 +10,3 @@ ref/mysql_connect.php
 
 files/*
 !files/.gitkeep
-
-**~
-
