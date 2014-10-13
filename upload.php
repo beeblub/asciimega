@@ -2,6 +2,9 @@
 <meta charset="utf-8"/>
 <?php
 
+//ini_set('display_errors',1);
+//error_reporting(E_ALL);
+
 //upload a file
 
 //no user stuff whatsoever
