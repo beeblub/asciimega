@@ -49,12 +49,11 @@ Font by: http://www.dafont.com/de/xfiles1.font
 
 Project Idea by tomatenbrei
 
-I'd love when you'd contribute to this project in any way.
+I'd love when you'd contribute to this project in any way. :)
 
 Contributors so far:
 - [tomatenbrei](https://github.com/tomatenbrei)
 - [beeblub](https://github.com/beeblub)
 
-TEST :)
 
 
