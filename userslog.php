@@ -39,15 +39,17 @@ $zeilen = file ($filename);
 $pages = array ();
 
 if (is_array ($zeilen)) {
-	echo "Clicks today: ".count($zeilen);
+	$numpageloads = 0;
 	foreach ($zeilen as $id => $zeile)
 	{
-		$zeile_ex = explode ('|', $zeile, 2)[0];
+		$zeile_ex = explode ('|', $zeile, 3);
 		if ( isset($pages[$zeile_ex]) == false)
-			$pages[$zeile_ex] = 1;
-		else
-			$pages[$zeile_ex] += 1;
+		{
+			$pages[$zeile_ex[0]] = $zeile_ex[1];
+			$numpageloads += $zeile_ex[1];
+		}
 	}
+	echo "Pageloads today: ".$numpageloads;
 	$variablestring1 = "";
 	$variablestring2 = "";
 

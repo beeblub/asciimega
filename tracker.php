@@ -99,12 +99,43 @@ function logurl($url)
 	$t = time();
 	$filename = $config_track['logpath_pre'].date("Y-m-d",$t).$config_track['logpath_post'];
 	$content = $url."|".$t."\n";
-	file_put_contents($filename, $content, FILE_APPEND | LOCK_EX);
+	if(file_exists($filename) == false)
+	{
+		$myfile = fopen($filename, "w") ;
+		fclose($filename);
+	}
+	$arr = file($filename, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+	$arrout = [];
+	$found = false;
+
+	foreach ($arr as $line)
+	{
+		list ($url2, $count,$lastaccesstime) = explode ('|', $line, 3);
+		if($url2 == $url)
+		{
+			$found = true;
+			array_push($arrout,$url."|".($count+1)."|".$t);
+		}
+		else
+		{
+			if($url2 != "")
+			array_push($arrout,$url2."|".($count)."|".$lastaccesstime);
+		}
+	}
+	if($found == false)
+	{
+		$str = $url."|".(1)."|".$t;
+		array_push($arrout,$str);
+	}
+	file_put_contents($filename, join("\n", $arrout), LOCK_EX);
+	
+	//file_put_contents($filename, $content, FILE_APPEND | LOCK_EX);
 }
 function track()
 {
 	$personid = hash("md5",$_SERVER['REMOTE_ADDR']."salt2l3492XD6".$_SERVER['HTTP_USER_AGENT']);
 	$currenturl = $_SERVER['REQUEST_URI'];
+
 	logurl($currenturl);
 	count_user($personid,$currenturl);
 }
