@@ -1,7 +1,7 @@
 <?php
 //error debugging
 //ini_set('display_errors',1);
-//error_reporting(E_ALL);
+error_reporting(E_ERROR);
 ?>
 
 <html>
@@ -9,10 +9,10 @@
 <meta charset="utf-8"/>
 <link rel="icon" href="logo.png" type="image/x-icon" />
 <link rel="shortcut icon" href="logo.png" type="image/x-icon" />
-<!--<link href='http://fonts.googleapis.com/css?family=Ubuntu&subset=latin,latin-ext' rel='stylesheet' type='text/css'>--font-family: 'Ubuntu', sans-serif; -->
+<link href='http://fonts.googleapis.com/css?family=Ubuntu&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
 <style>
 html{margin: 0;width:100%;height:100%;}
-body{margin: 0;width:100%;height:100%;overflow-x:hidden;overflow-y:scoll;}
+body{margin: 0;width:100%;height:100%;overflow-x:hidden;overflow-y:scoll; font-family: 'Ubuntu', sans-serif;}
 
 #reportdiv
 {
@@ -62,6 +62,10 @@ h2{
 	padding:0;
 }
 
+.naviItem:hover{
+	opacity:.8;
+	cursor:default;
+}
 
 #watchNaviSearch input{
 	height: 30px;
@@ -119,27 +123,27 @@ z-index:5;position:absolute;left:0px;top:0px;width:150px;height:150px;
 
 </style>
 </head>
-<body id="master">
+<body id="master" style="min-width: 750px;">
 
 <noscript style="background-color: #171717; height: 100%; width: 100%; position: absolute; z-index: 1000; margin-left: -50%; margin-top: 0%;">
 	<p>Javascript is not enabled. Please enable javascript before you use this site. </p><a style="color: #4aadd0;" class="hoverText" href="http://www.enable-javascript.com/" target="_blank">diesen</a><p></p>
 </noscript>
 <!-- head -->
-<div style="left:0px;top:0px;width:100%;height:50px;background-color:black;opacity:0.7;">
-<div id="navigationBar">
-<table border="0" style="color:white;width:100%;height:100%;text-align:center;font-size:35px;">
+<div style="left:0px;top:0px;width:100%;height:70px;background-color:black;opacity:0.7;">
+<div id="navigationBar" height="70px">
+<table border="0" style="color:white;width:100%;text-align:center;font-size:35px; height: 50px; padding-top: 20px;">
 <tr>
 <td width="30%">
 </td>
 <td>
-<i><a style="text-decoration:none;color:white;" href="index.php?p=w">Watch</a></i>
+<i><a style="text-decoration:none;color:white;" class='naviItem' href="index.php?p=w">Watch</a></i>
 </td>
 <td style="color:orange;">
-<i><a style="text-decoration:none;color:orange;" href="index.php?p=e">Create</a></i>
+<i><a style="text-decoration:none;color:orange;" class='naviItem' href="index.php?p=e">Create</a></i>
 </td>
 <td width="30%">
-<div style="font-size:15px;" onclick="window.location = 'index.php?p=log';" id="onlineusers">
-Users Online: 0
+<div style="font-size:15px;" class='naviItem' onclick="window.location = 'index.php?p=log';" id="onlineusers">
+<p title="view details" >Users Online: 0</p>
 </div>
 </td>
 </tr>
@@ -216,7 +220,7 @@ function dosearch()
 	}
 }
 </script>
-<div id="watchNavigation" style="display:none; position:relative; top:0px;left:150px;height: 50px; width: 500px; z-index:2;">
+<center><div id="watchNavigation" style="display:none; position:relative; top:0px; left: -10%; height: 50px; width: 500px; z-index:2;"><!--left:150px;-->
 	<table style="height:50px; width:500px;text-align: center;" border="0" cellpadding="0" cellspacing="0">
 		<tr>
 			<td width="25px" class="naviHover" ><h2>°</h2></td>
@@ -230,7 +234,7 @@ function dosearch()
 			<td width="50px" class="naviHover" id="jsId" onclick="openNavi(event, 'watchNaviSearch');"><img src="searchIcon.png" style="margin-top: 5px; height: 30px; width: 30px; opacity:.5;"></img></td>
 		</tr>
 	</table>
-</div>
+</div></center>
 
 <div id="watchNaviSearch" style="position:relative; left:386px;top:0px;display: none; height: 40px; padding:10px; width: 250px; z-index:3; background-color:rgba(0,0,0,.5); ">
 	<table style="height:100%; width:100%;" border="0" cellpadding="0" cellspacing="0">
@@ -329,7 +333,7 @@ for(var i = 0;i<x.length;i++)
 	table.style.display  = "inline-block";
 	table.style.padding = "10px";
 	table.style.margin="10px";
-	table.style.boxShadow = "7px 7px 7px black";
+	table.style.boxShadow = "0px 8px 10px -1px black";
 	lastrand = getRandColor(10+Math.random() * 246);
 	table.style.backgroundColor = lastrand;
 }
