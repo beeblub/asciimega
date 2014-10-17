@@ -20,8 +20,8 @@ if($animationurl != "")
 		$count++;
 		$animationid = $row['id'];
 	    	$authorid = $row['author_id'];
-		$title = $row['title'];
-		$description = $row['description'];
+		$title = strip_tags($row['title']);
+		$description = strip_tags($row['description']);
 		$filesize = $row['filesize'];
 		$frames = $row['frames'];
 		$views = $row['views'];
@@ -78,16 +78,16 @@ if($animationurl != "")
 		//display each comment
 		while ($row = mysqli_fetch_assoc($result)) {
 			$ccount++;
-			$animationid = $row['id'];
-		    	$content = $row['content'];
-			$content_url_animation = $row['content_url_animation'];
-			$id_author = $row['id_author'];
+			$animationid = strip_tags($row['id']);
+		    	$content = strip_tags($row['content']);
+			$content_url_animation = strip_tags($row['content_url_animation']);
+			$id_author = strip_tags($row['id_author']);
 
 			$author_name = "";
 			if($id_author == NULL)
 				$author_name = "Anonymous";
 
-			echo "<div id='comment'>".($numcomments-($ccount-1))." - ".$author_name.":<br>".strip_tags($content)."<br>";
+			echo "<div id='comment'>".($numcomments-($ccount-1))." - ".$author_name.":<br>".$content."<br>";
 			if($content_url_animation != NULL)
 			{
 				//check if exists. else: dont add an animation. Easy as that

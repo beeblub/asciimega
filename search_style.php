@@ -49,8 +49,8 @@ $count = 0;
 while ($row = mysqli_fetch_assoc($result)) {
 	$count++;
     	$authorid = $row['author_id'];
-	$title = $row['title'];
-	$description = $row['description'];
+	$title = strip_tags($row['title']);
+	$description = strip_tags($row['description']);
 	$url = $row['url'];
 	$filesize = $row['filesize'];
 	$frames = $row['frames'];
