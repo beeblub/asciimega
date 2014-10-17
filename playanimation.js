@@ -83,8 +83,6 @@ function stop()
 	timeouthandler = null;
 
 	actualplaymode = 2;
-	
-	//duration_timer = setTimeout(update_timer_start,10);
 }
 function reset()
 {
@@ -199,9 +197,6 @@ function update()
 	}
 	else
 	{
-		//update_progress();
-
-		//alert(duration);
 		if(autoloop == true)
 		{
 			currframe = 0;
@@ -210,7 +205,7 @@ function update()
 		else
 		{
 			timeouthandler = setTimeout(progress_show_end,frametime-ms);
-			//alert("animation ends here.");
+			//The animation ends here
 		}
 	}
 
@@ -322,8 +317,7 @@ function readcoltimdat(buffer)
 	{
 		return false;
 	}
-	//alert(coldat_frames+"-"+coldat_foreground+"-"+coldat_background);
-	//alert(timdat_frames+"-"+timdat_time);
+
 	if(coldat_frames.length > 0)	
 		coldat_next = coldat_frames[0];
 	if(timdat_frames.length > 0)
@@ -469,9 +463,6 @@ function update_progress()
 {
 	if(update_animationinfo_progress)
 	{
-		//alert(duration_progress+"::"+Math.round((duration_progress/duration)*100));
-		//var progress = document.getElementById("progAnimation");
-		//progress.value = Math.round((duration_progress/duration)*100);
 		fill_with_feedback("progAnimation",Math.round((duration_progress/duration)*100));
 	}
 }
@@ -485,10 +476,7 @@ function set_wrapper_style(col_foreground,col_background)
 	var allcontainer = document.getElementById("animation_win");
 	if(allcontainer)
 	{
-		//document.getElementById("animation_win").innerHTML = "";
-		//document.getElementById("animation_win").style = "background-color:"+col_background+";";
 		document.getElementById("animation_win").style.backgroundColor = col_background;
-		//allcontainer.style.backgroundColor = col_background;
 	}
 }
 
@@ -530,30 +518,6 @@ function loadframe(frameid)
 }
 
 //1 = show stats, 2 = do progress bar
-
-function createCORSRequest(method, url) {
-  var xhr = new XMLHttpRequest();
-  if ("withCredentials" in xhr) {
-
-    // Check if the XMLHttpRequest object has a "withCredentials" property.
-    // "withCredentials" only exists on XMLHTTPRequest2 objects.
-    xhr.open(method, url, true);
-
-  } else if (typeof XDomainRequest != "undefined") {
-
-    // Otherwise, check if XDomainRequest.
-    // XDomainRequest only exists in IE, and is IE's way of making CORS requests.
-    xhr = new XDomainRequest();
-    xhr.open(method, url);
-
-  } else {
-
-    // Otherwise, CORS is not supported by the browser.
-    xhr = null;
-
-  }
-  return xhr;
-}
 function animation_from_url(url,bool1,bool2)
 {
 	var movdat = null;
@@ -570,7 +534,6 @@ function animation_from_url(url,bool1,bool2)
 	xmlhttp.send();
 
 	movdat = xmlhttp.responseText;
-		//alert("GOT:"+xmlhttp.responseText+")");
 
 	movdat = movdat.split('\\n');
 	load_animation(movdat,bool1,bool2);
@@ -578,21 +541,10 @@ function animation_from_url(url,bool1,bool2)
 	var str = document.getElementById("animation_wrapper_str");
 	str.innerHTML = "Finished downloading. Click to play.";
 	str.style.color = "black";
-	
-	//movdat = xmlhttp.responseText;
-	//alert("GOT:"+xmlhttp.responseText+")");
 }
+
 //no cross orgin..
 var docurl = document.URL;
-//earlier version. Delete in further releases.
-/*var adrs_pre = "http";
-if(docurl.indexOf("https") > -1)
-{
-	adrs_pre = "https";
-}
-var adrs = adrs_pre+"://tomatenbrei.cloudapp.net/ascii/files/";
-if(docurl.indexOf("asciime.ga") > -1)
-	adrs = adrs_pre+"://asciime.ga/files/";*/
 var docs = 0;
 for(var i = docurl.length;i > 0;i--)
 {

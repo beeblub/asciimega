@@ -5,7 +5,7 @@ Project to create and play ascii animations online
 ##Disclaimer:
 ![No Idea](http://www.aux.tv/wp-content/uploads/2013/11/i-have-no-idea-what-im-doing-science-dog.jpg)
 
-Current public version lives [here](https://tomatenbrei.cloudapp.net/ascii)  
+Current public version lives [here (https://beta.asciime.ga)](https://beta.asciime.ga)  
 
 If you want to copy this project to work on it, follow these steps:
 
