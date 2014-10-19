@@ -88,7 +88,7 @@ if($animationurl != "")
 		//comment header (possebility to post comments)
 		echo "<center><div style='padding:30px;background-color:rgba(255,255,255,0.3);'>";
 		echo "<font style='font-size:30px;'><i>Comments:</i></font><br>";
-		echo "<a style='color:blue;' href='postcomment.php?id=".$animationid.".'>Write a comment</a><br><br>";
+		echo "<a style='color:blue;' href='postcomment.php?id=".$animationid."'>Write a comment</a><br><br>";
 		//display each comment
 		while ($row = mysqli_fetch_assoc($result)) {
 			$ccount++;
