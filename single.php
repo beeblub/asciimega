@@ -6,7 +6,15 @@ if($animationurl != "")
 {
 	include("ref/mysql_connect.php");
 	//get the animation
-	$command = "Select id,author_id,title,description,filesize,frames,views,thumbnail,comments from animations where url='".mysqli_real_escape_string($link,$animationurl)."';";
+	$command = "Select id,url,author_id,title,description,filesize,frames,views,thumbnail,comments from animations where url='".mysqli_real_escape_string($link,$animationurl)."';";
+
+	if($animationurl == "%random")
+	{
+		$offset_result = mysqli_query($link,"SELECT FLOOR(RAND() * COUNT(*)) AS `offset` FROM animations;");
+		$offset_row = mysqli_fetch_object( $offset_result );
+		$offset = $offset_row->offset;
+		$command = "SELECT id,url,author_id,title,description,filesize,frames,views,thumbnail,comments FROM animations LIMIT $offset, 1 "; 
+	}
 
 	$result = mysqli_query($link,$command);
 
@@ -24,9 +32,15 @@ if($animationurl != "")
 		$description = strip_tags($row['description']);
 		$filesize = $row['filesize'];
 		$frames = $row['frames'];
+		
 		$views = $row['views'];
 		$thumbnail = $row['thumbnail'];   
 		$comments = $row['comments']; 
+
+		$realurl = $row['url'];
+		if($animationurl == "%random")
+			$animationurl = $realurl;
+
 		$numcomments = $comments;
 		if($thumbnail == NULL)
 			$thumbnail = "";
