@@ -1,4 +1,22 @@
 <center>
+<script>
+	var screenWidth = window.screen.width;
+	var screenHeight = window.screen.height;
+	var neededWidth;
+	var neededHeight;
+	var paddingSize;
+	var neededScale = 1;
+	var msg = "bla";
+	if (screenWidth<screenHeight){
+		paddingSize = (Math.round(screenWidth/24))*2;
+		neededWidth = screenWidth - paddingSize;
+		neededHeight = Math.round(neededWidth*.6);
+	}else{
+		paddingSize = 10;
+		neededWidth = 360;
+		neededHeight = 200;
+	}
+</script>
 <div style="display: table-cell;">
 <?php
 include("functions.php");
@@ -67,8 +85,10 @@ while ($row = mysqli_fetch_assoc($result)) {
 		//Authorname logic
 	}
 	
+	$neededHeight = 360;
+	$neededWidth = 200;
 	//display the view
-	create_view(360,200,$url,$title,$description,$views,$authorname,$comments,$filesize,$frames,false);
+	create_view($neededHeight,$neededWidth,$url,$title,$description,$views,$authorname,$comments,$filesize,$frames,false);
 }
 mysqli_close($link);
 

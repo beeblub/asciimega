@@ -1,7 +1,7 @@
 <?php
 //contains functions used to generalize stuff
 function create_view($width,$height,$url,$title,$description,$views,$authorname,$comments,$filesize,$frames,$single)
-{
+{	
 	//$prestr = "http://tomatenbrei.cloudapp.net/ascii/";
 	$divname = 'animationtable';
 
@@ -20,7 +20,7 @@ function create_view($width,$height,$url,$title,$description,$views,$authorname,
 	if($single)
 		$fontsize = "small";
 
-	echo "<br><div onclick = \"window.location = 'watch?a=".$url."';\" style='color:gray;font-size:small;margin:5px;max-width:360px;word-wrap: break-word; word-break: break-all;'>".$description."<br><br></td></tr><tr><td><div onclick = \"window.location = 'watch?a=".$url."';\" style='font-size:".$fontsize.";'>Views: ".$views."</div></td></tr><tr><td><div onclick = \"window.location = 'watch?a=".$url."';\" style='display:inline-block;width:50%;text-align:left;font-size:".$fontsize.";'>Comments: ".$comments."<br></div><div onclick = \"window.location = 'watch?a=".$url."';\" style='display:inline-block;width:50%;text-align:right;font-size:".$fontsize.";'>by ".$authorname."<br></div></div></div></td></tr>";
+	echo "<br><div onclick = \"window.location = 'watch?a=".$url."';\" style='color:gray;font-size:small;margin:5px;max-width:".$width."px;word-wrap: break-word; word-break: break-all;'>".$description."<br><br></td></tr><tr><td><div onclick = \"window.location = 'watch?a=".$url."';\" style='font-size:".$fontsize.";'>Views: ".$views."</div></td></tr><tr><td><div onclick = \"window.location = 'watch?a=".$url."';\" style='display:inline-block;width:50%;text-align:left;font-size:".$fontsize.";'>Comments: ".$comments."<br></div><div onclick = \"window.location = 'watch?a=".$url."';\" style='display:inline-block;width:50%;text-align:right;font-size:".$fontsize.";'>by ".$authorname."<br></div></div></div></td></tr>";
 	if($single)
 		echo "<tr><td><br>Traffic: ".(($views*$filesize))." Bytes</td></tr>";
 	echo "</table></div>";

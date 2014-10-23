@@ -1,0 +1,75 @@
+body{
+	min-width: 750px;
+}
+
+#inputGo{
+	height: 30px;
+	padding: 5px;
+}
+
+#imgSearchIcon{
+	margin-top: 5px; height: 30px; width: 30px;
+}
+
+#watchNaviSearch{
+	height: 40px;
+}
+
+#tdWatch a{
+	color:white;
+}
+
+#tdMobileSelect{
+	display:none;
+}
+
+#mobileNavi{
+	display:none;
+}
+
+#logo{
+	position:absolute;
+	width:150px;height:150px;
+}
+
+#onlineusers{
+	font-size:15px;
+}
+
+#onlineusers_title{
+	font-size: 13px;
+}
+
+#watchNavigation{
+	position:relative;
+	top:0px; 
+	left: -10%; 
+	width: 500px;
+	height: 50px; 
+	border: 3px rgba(0,0,0,.7) solid;
+}
+
+#watchNavigation>table{
+	width:500px;
+	height: 50px;
+}
+
+#watchNaviSearch{
+	position:relative;
+	top:0px;
+	width: 250px;
+}
+
+#watchNaviSearch>table{
+	width:250px;
+}
+
+#navigationBar_div{
+	height:70px;
+}
+
+#navigationBar>table{
+	height: 50px; 
+	font-size:35px; 
+	padding-top: 20px;
+}

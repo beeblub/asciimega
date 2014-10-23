@@ -5,12 +5,15 @@ error_reporting(E_ERROR);
 ?>
 
 <html>
-<head>
-<meta charset="utf-8"/>
-<link rel="icon" href="logo.png" type="image/x-icon" />
-<link rel="shortcut icon" href="logo.png" type="image/x-icon" />
-<link href='http://fonts.googleapis.com/css?family=Ubuntu&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
-<style>
+	<head>
+		<meta charset="utf-8"/>
+		<link rel="icon" href="logo.png" type="image/x-icon" />
+		<link rel="shortcut icon" href="logo.png" type="image/x-icon" />
+		<link href='http://fonts.googleapis.com/css?family=Ubuntu&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+		<link rel="stylesheet" media="screen" type="text/css" href="style_screen.css"></link>
+		<!--<link rel="stylesheet" media="mobile and (max-width:999px)" type="text/css" href="style_mobile_s.css"></link>-->
+		<!--<link rel="stylesheet" media="mobile and (min-width:1000px)" type="text/css" href="style_mobile_l.css"></link>-->
+		<style>
 html{margin: 0;width:100%;height:100%;}
 body{margin: 0;width:100%;height:100%;overflow-x:hidden;overflow-y:scoll; font-family: 'Ubuntu', sans-serif;}
 
@@ -41,6 +44,10 @@ body{margin: 0;width:100%;height:100%;overflow-x:hidden;overflow-y:scoll; font-f
 	background-color: #757575;
 }
 
+.navigationItem:active{
+	background-color: #757575;
+}
+
 a{
 	cursor:default;
 	text-decoration: none;
@@ -67,6 +74,11 @@ h2{
 	cursor:default;
 }
 
+.naviItem:active{
+	opacity:.7;
+	cursor:default;
+}
+
 #watchNaviSearch input{
 	height: 30px;
 	border:0;
@@ -80,27 +92,24 @@ h2{
 	-moz-transition: background-color .5s ease-in-out;
 	-o-transition: background-color .5s ease-in-out;
 	-ms-transition: background-color .5s ease-in-out;
-
-	height: 30px;
 	border:0;
 	font-family: 'Ubuntu', sans-serif;
-	padding:5px;
 }
 
 #inputGo:hover{
-	background-color:rgba(200,200,200,.5);
+}
+
+#inputGo:active{
 }
 
 #watchNavigation{
 	text-align:center;
-	border: 3px rgba(0,0,0,.7) solid;
 	cursor:default;
 	color: rgba(255, 255, 255,.75);
 	text-decoration: none;
 }
 
 .naviHover{
-	background-color:rgba(0,0,0,.5);
 	transition: background-color .5s ease-in-out;
 	-webkit-transition:  background-color .5s ease-in-out;
 	-moz-transition: background-color .5s ease-in-out;
@@ -111,51 +120,85 @@ h2{
 .naviHover:hover{
 	background-color:rgba(0,0,0,.7);
 }
+
+.naviHover:active{
+	background-color:rgba(0,0,0,.7);
+}
+
 .userslog{
 background-color:rgba(255,255,255,0.9);
 display:inline-block;
 padding:50px;
 color:black;
 }
-.logo{
-z-index:5;position:absolute;left:0px;top:0px;width:150px;height:150px;
+#logo{
+z-index:5;left:0px;top:0px;
+transition: opacity .5s ease-in-out;
+	-webkit-transition:  opacity .5s ease-in-out;
+	-moz-transition: opacity .5s ease-in-out;
+	-o-transition: opacity .5s ease-in-out;
+	-ms-transition: opacity .5s ease-in-out;
 }
 
-</style>
-</head>
-<body id="master" style="min-width: 750px;">
+		</style>
+	</head>
+	<body id="master">
 
-<noscript style="background-color: #171717; height: 100%; width: 100%; position: absolute; z-index: 1000; margin-left: -50%; margin-top: 0%;">
-	<p>Javascript is not enabled. Please enable javascript before you use this site. </p><a style="color: #4aadd0;" class="hoverText" href="http://www.enable-javascript.com/" target="_blank">diesen</a><p></p>
-</noscript>
-<!-- head -->
-<div style="left:0px;top:0px;width:100%;height:70px;background-color:black;opacity:0.7;">
-<div id="navigationBar" height="70px">
-<table border="0" style="color:white;width:100%;text-align:center;font-size:35px; height: 50px; padding-top: 20px;">
-<tr>
-<td width="30%">
-</td>
-<td>
-<i><a style="text-decoration:none;color:white;" class='naviItem' href="index.php?p=w">Watch</a></i>
-</td>
-<td style="color:orange;">
-<i><a style="text-decoration:none;color:orange;" class='naviItem' href="index.php?p=e">Create</a></i>
-</td>
-<td width="30%">
-<div style="font-size:15px;" class='naviItem' onclick="window.location = 'index.php?p=log';" id="onlineusers">
-<p title="view details" >Users Online: 0</p>
-</div>
-</td>
-</tr>
-</table>
-
-</div>
-</div>
-
-<script>
+		<noscript style="background-color: #171717; height: 100%; width: 100%; position: absolute; z-index: 1000; margin-left: -50%; margin-top: 0%;">
+			<p>Javascript is not enabled. Please enable javascript before you use this site. </p><a style="color: #4aadd0;" class="hoverText" href="http://www.enable-javascript.com/" target="_blank">diesen</a><p></p>
+		</noscript>
+		
+		<!-- head -->
+		<div id="navigationBar_div" style="left:0px;top:0px;width:100%;background-color:black;opacity:.8;z-index: 1;">
+			<div id="navigationBar">
+				<table border="0" style="color:white;width:100%;text-align:center;">
+					<tr>
+						<td width="30%">
+						</td>
+						<td id="tdWatch">
+							<i><a style="text-decoration:none;" class='naviItem' href="index.php?p=w">Watch</a></i>
+						</td>
+						<td id="tdMobileSelect" style="color:white;">
+							<h3 style="position:absolute; margin-left:-50px; margin-top:-50px; font-size:75px;" class='naviItem' onclick="showMobileNavi()">°</h3>
+							<div style="" id="div_onlineusers" class='naviItem' onclick="window.location = 'index.php?p=log';" >
+								<p id="onlineusers" title="view details" >0</p><p id="onlineusers_title"> Users online: </p>
+							</div>
+						</td>
+						<td style="color:orange;" id="tdCreate">
+							<i onclick="changeForMobile(0)"><a style="text-decoration:none;color:orange;" class='naviItem' href="index.php?p=e">Create</a></i><!--<h3 id="mobileNavi">°</h3>-->
+						</td>
+						<td id="tdOnlineusers" width="30%">
+							<div style="font-size:15px;" class='naviItem' onclick="window.location = 'index.php?p=log';" >
+								<p style="float:left;">Users online:&nbsp</p><p id="onlineusersScreen" title="view details" style="float:left;">0</p>
+							</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	
+	<script>	
+var crntOpacity = 1;
+function changeOpacityLogo(){
+	var newIndex;
+	var newTitle;
+	if (crntOpacity == 1)	{
+		newOpacity = '.3';
+		newTitle = "want solid logo";
+		crntOpacity = 0;
+	}else{
+		newOpacity = '1';
+		newTitle = "want transparent logo";
+		crntOpacity = 1;
+	}
+	document.getElementById("logo").style.opacity = newOpacity;
+	document.getElementById("logo").title = newTitle;
+}
+	
 function setonlineusers(numonline)
 {
-	document.getElementById("onlineusers").innerHTML = "Users Online: "+numonline;
+	document.getElementById("onlineusers").innerHTML = numonline;//"Users Online: "+
+	document.getElementById("onlineusersScreen").innerHTML = numonline;
 }
 function openNavi(event, divName){
 	divCrnt = document.getElementById(divName);
@@ -220,44 +263,50 @@ function dosearch()
 	}
 }
 </script>
-<center><div id="watchNavigation" style="display:none; position:relative; top:0px; left: -10%; height: 50px; width: 500px; z-index:2;"><!--left:150px;-->
-	<table style="height:50px; width:500px;text-align: center;" border="0" cellpadding="0" cellspacing="0">
-		<tr>
-			<td width="25px" class="naviHover" ><h2>°</h2></td>
-			<td width="150px" class="naviHover" title="change category" onclick="changeCategory();"><h1 id="txtCategory">most popular</h1></td>
-			<!--<td width="50px" class="naviHover"><h1>first</h1></td>
-			<td width="50px" class="naviHover" title="previous 10"><center><h2><</h2></center></td>
-			<td width="75px" style="background-color:rgba(0,0,0,.5);"><center><h1>01-10</h1></center></td>
-			<td width="50px" class="naviHover" title="next 10"><center><h2>></h2></center></td>
-			<td  width="50px"class="naviHover"><h1>last</h1></td>-->
-			<td  width="50px"class="naviHover"><input title="" type="button" onclick="dosearch()" id="inputGo" value="Go"></td>
-			<td width="50px" class="naviHover" id="jsId" onclick="openNavi(event, 'watchNaviSearch');"><img src="searchIcon.png" style="margin-top: 5px; height: 30px; width: 30px; opacity:.5;"></img></td>
-		</tr>
-	</table>
-</div></center>
 
-<div id="watchNaviSearch" style="position:relative; left:386px;top:0px;display: none; height: 40px; padding:10px; width: 250px; z-index:3; background-color:rgba(0,0,0,.5); ">
-	<table style="height:100%; width:100%;" border="0" cellpadding="0" cellspacing="0">
-	<tr>
-	<form action="#" autocomplete="on" id="formSuche">
-		<td width="90px">
-			<input title="" type="text" id="searchforname_input" name="searchforname_input" placeholder="Search">
-		</td>
-		<td width="40px">
-			<input title="" type="button" onclick="dosearch_name()" id="inputGo" value="Go">
-		</td>
-	</form>
-	</tr>
-	</table>
-</div>
+	<center>
+		<div id="watchNavigation" style="display:none; z-index:2;"><!--left:150px;-->
+			<table style="text-align: center; background-color:rgba(0,0,0,.5);" border="0" cellpadding="0" cellspacing="0">
+				<tr>
+					<td width="25px" class="naviHover"><h2>°</h2></td>
+					<td width="150px" class="naviHover" title="change category" onclick="changeCategory();"><h1 id="txtCategory">most popular</h1></td>
+					<!--<td width="50px" class="naviHover"><h1>first</h1></td>
+					<td width="50px" class="naviHover" title="previous 10"><center><h2><</h2></center></td>
+					<td width="75px" style="background-color:rgba(0,0,0,.5);"><center><h1>01-10</h1></center></td>
+					<td width="50px" class="naviHover" title="next 10"><center><h2>></h2></center></td>
+					<td  width="50px"class="naviHover"><h1>last</h1></td>-->
+					<td  width="50px"class="naviHover"><input title="" type="button" onclick="dosearch()" id="inputGo" value="Go"></td>
+					<td width="50px" class="naviHover" id="jsId" onclick="openNavi(event, 'watchNaviSearch');"><img src="searchIcon.png" id="imgSearchIcon" style="opacity:.5;"></img></td>
+				</tr>
+			</table>
+		</div>
+	</center>
 
-<div class="logo" onclick="this.style.position='absolute';">
-<img width="100%"  src="logo.png"></img>
-</div>
-<div style="position:relative;height:15px;width:30px;">
-</div>
+	<center>
+		<div id="watchNaviSearch" style="display: none;  padding:10px; z-index:3; background-color:rgba(0,0,0,.5); ">
+			<table style="height:100%;" border="0" cellpadding="0" cellspacing="0">
+				<tr>
+					<form action="#" autocomplete="on" id="formSuche">
+					<td width="90px">
+						<input title="" type="text" id="searchforname_input" name="searchforname_input" placeholder="Search">
+					</td>
+					<td width="40px">
+						<input title="" type="button" onclick="dosearch_name()" id="inputGoSearch" class="naviHover" value="Go">
+					</td>
+					</form>
+				</tr>
+			</table>
+		</div>
+	</center>
 
-<br><br>
+	<div id="logo" title="want transparent logo" onclick="changeOpacityLogo();">
+		<img width="100%" src="logo.png"></img>
+	</div>
+	<div style="position:relative;height:15px;width:30px;">
+	</div>
+
+	<br><br>
+	<div id="divMobileAnimation" style="">
 <?php
 $page = $_GET['p'];
 
@@ -270,7 +319,7 @@ include 'tracker.php';
 
 echo "<script>setonlineusers(".count_users().");</script>";
 
-if($page == "" || $page == "w")
+if(($page == "" || $page == "w"))
 {	
 	echo "<title>Watch</title>";
 	echo "<script>var single = false;</script>";
@@ -297,8 +346,10 @@ else if($page == "an")
 	include("single.php");
 }
 ?>
-</body>
-<script>
+</div>
+	</body>
+
+	<script>
 //changes color
 function getRandColor(brightness){
     var rgb = [Math.random() * 256, Math.random() * 256, Math.random() * 256];
@@ -361,5 +412,5 @@ else
 	master.style.height = "100%";
 }
 //master.style = "background-attachment:fixed;background-image: -webkit-linear-gradient("+randcol1+" 0%, "+randcol2+" 100%); background-image: -moz-linear-gradient("+randcol1+" 0%, "+randcol2+" 100%); background-image: -o-linear-gradient("+randcol1+" 0%, "+randcol2+" 100%); background-image: linear-gradient("+randcol1+" 0%, "+randcol2+" 100%);width: 100%;height: 100%;background-color:"+randcol1+";";
-</script>
+	</script>
 </html>
