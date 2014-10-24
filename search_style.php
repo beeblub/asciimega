@@ -1,6 +1,4 @@
 <?php
-session_start();
-
 include("functions.php");
 
 $options = "l";
