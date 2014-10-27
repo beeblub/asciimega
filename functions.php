@@ -33,4 +33,47 @@ function create_message($message,$single)
 		$divname = 'animationtable_single';
 	echo "<div name='".$divname."' style='display:inline-block;background-color:white;padding:10px;margin:10px;'><center>".$message."</center></div>";
 }
+//--------------------------------
+//Login Functions
+function setuserdata($uid,$uname)
+{
+	session_start();
+	if(!isset($_SESSION['userid']))
+	{
+		$_SESSION['userid'] = $uid;
+		$_SESSION['username'] = $uid;
+	}
+}
+function getuserid()
+{
+	session_start();
+	if(!isset($_SESSION['userid']))
+	{
+		//there is no userid.. 
+		return -1;
+	}
+	else
+	{
+		return $_SESSION['userid'];
+	}
+}
+function getusername()
+{
+	session_start();
+	if(!isset($_SESSION['username']))
+	{
+		//there is no userid.. 
+		return -1;
+	}
+	else
+	{
+		return $_SESSION['username'];
+	}
+}
+function logout()
+{
+	session_start();
+	unset($_SESSION['userid']);
+	unset($_SESSION['username']);
+}
 ?>
