@@ -24,7 +24,7 @@ The following steps are done in the TEST DIR, not the GIT DIR.
 2. In `ref/sample.config.php`, insert the path of the font in `$config_captcha` ('fontpath') (found at: `BASEPATH/captcha/XFILES.TTF`) then rename it to `ref/config.php` (when you are building this project for the first time. Otherwise: look whether the content of `ref/sample.config.php` differs from your `ref/config.php` and add single configurations manually.
 3. Configure database access in `ref/sample.mysql_connect.php`. When you are done, rename the file to `mysql_connect.php`(when you are building this project for the first time).
 4. Run create_tables.php to create the tables (when you are building this project for the first time).
-5. When uploading an animation, files are moved into the `files/` directory. Make sure that php has the rights to write into that directory. Same goes to `nonpublic/` (for user logs)
+5. When uploading an animation, files are moved into the `files/` directory. Make sure that php has the rights to write into that directory. Same goes to `nonpublic/` (for user logs) and `ppic/` (for user profile images)
 
 -> And you should be ready to go :)
 
