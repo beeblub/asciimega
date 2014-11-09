@@ -39,7 +39,7 @@ function upload_animation($a_title, $a_description, $a_url, $a_authkey,$a_filesi
 }
 
 
-function generateRandomString($length = 10) {
+function generateRandomString_upload($length = 10) {
     $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
     $randomString = '';
     for ($i = 0; $i < $length; $i++) {
@@ -75,7 +75,7 @@ if($_FILES['anim'] != null)
 			if($tlen > 2 && $tlen <= 30 && $dlen > 2 && $dlen <= 300)
 			{
 				//we generate a secret
-				$secret = generateRandomString(5);
+				$secret = generateRandomString_upload(5);
 				//modify it
 				$secret = $secret.substr(hash("md5",$title.$description.$secret),0,5);
 
@@ -124,9 +124,9 @@ if($_FILES['anim'] != null)
 					{
 						//we generate a name for the new animation
 						$numframes = $tmpsum/$heigth;
-						$randomfilename = generateRandomString(5);
+						$randomfilename = generateRandomString_upload(5);
 						while (file_exists("files/" . $randomfilename)) {
-						      $randomfilename = generateRandomString(strlen($randomfilename)+1);}
+						      $randomfilename = generateRandomString_upload(strlen($randomfilename)+1);}
 					
 					      //now we upload the animation 
 
