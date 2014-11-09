@@ -1,26 +1,3 @@
-<<<<<<< HEAD
-<center>
-<script>
-	var screenWidth = window.screen.width;
-	var screenHeight = window.screen.height;
-	var neededWidth;
-	var neededHeight;
-	var paddingSize;
-	var neededScale = 1;
-	var msg = "bla";
-	if (screenWidth<screenHeight){
-		paddingSize = (Math.round(screenWidth/24))*2;
-		neededWidth = screenWidth - paddingSize;
-		neededHeight = Math.round(neededWidth*.6);
-	}else{
-		paddingSize = 10;
-		neededWidth = 360;
-		neededHeight = 200;
-	}
-</script>
-<div style="display: table-cell;">
-=======
->>>>>>> upstream/master
 <?php
 include("functions.php");
 
