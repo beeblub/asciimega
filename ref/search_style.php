@@ -1,5 +1,5 @@
 <?php
-include("functions.php");
+include_once("functions.php");
 
 $options = "l";
 
@@ -47,21 +47,29 @@ if($to > $animationcount)
 	if($options == "mv")
 	{
 		//most views
-		$command = "Select author_id,title,description,url,filesize,frames,views,thumbnail,comments from animations order by views DESC limit $from,$limit;";
+		$command = "Select name,title,animations.description,url,filesize,frames,views,thumbnail,comments,pic from animations,users where users.id = animations.author_id order by views DESC limit $from,$limit;";
 		$searchstr .= " for the most viewed animations from place $from to $to of $animationcount.";
+	}
+	else if($options == "t" && $options_text != "")
+	{
+		//name
+			//echo $options2;
+			$command = "Select name,title,animations.description,url,filesize,frames,views,thumbnail,comments,pic from animations, users  where title LIKE '%".mysqli_real_escape_string($link,$options_text)."%' and users.id = animations.author_id order by views DESC limit $from,$limit;";
+			//echo $command;
+			$searchstr .= " of animations with the name '$options_text': ";
 	}
 	else if($options == "n" && $options_text != "")
 	{
 		//name
 			//echo $options2;
-			$command = "Select author_id,title,description,url,filesize,frames,views,thumbnail,comments from animations where title LIKE '%".mysqli_real_escape_string($link,$options_text)."%' order by views DESC limit $from,$limit;";
+			$command = "Select name,title,animations.description,url,filesize,frames,views,thumbnail,comments,pic from animations, users  where users.name LIKE '%".mysqli_real_escape_string($link,$options_text)."%' and users.id = animations.author_id order by date DESC limit $from,$limit;";
 			//echo $command;
-			$searchstr .= " of animations with the name '$options_text': ";
+			$searchstr .= " of animations by author '$options_text': ";
 	}
 	else
 	{
 		//latest
-		$command = "Select author_id,title,description,url,filesize,frames,views,thumbnail,comments from animations order by date DESC limit $from,$limit;";
+		$command = "Select name,title,animations.description,url,filesize,frames,views,thumbnail,comments,pic from animations, users where users.id = animations.author_id order by date DESC limit $from,$limit;";
 		$searchstr .= " for the latest animations from place $from to $to of $animationcount.";
 	}
 
@@ -70,9 +78,13 @@ if($to > $animationcount)
 $result = mysqli_query($link,$command);
 
 $opt2string = "";
-if($options == "n" && $options_text != "")
+if(($options == "t" || $options == "n") && $options_text != "")
 {
+	if($options == "t")
 	$newanimationcount_q = "select count(*) from animations where title LIKE '%".mysqli_real_escape_string($link,$options_text)."%';";
+	if($options == "n")
+	$newanimationcount_q = "select count(*) from animations,users where users.name LIKE '%".mysqli_real_escape_string($link,$options_text)."%' and users.id = animations.author_id;";
+
 	$result2 = mysqli_query($link,$newanimationcount_q);
 	$newanimationcount = 0;
 
@@ -98,7 +110,7 @@ if($from > 0)
 	$searchstr .= "<br><a href = 'index.php?o=$options$opt2string&from=".($from-$limit)."&limit=$limit'>backward</a>";
 
 
-echo "<div style='background-color:rgba(255,255,255,0.5);padding:10px;'>$searchstr</div><br>";
+echo "<div style='background-color:rgba(255,255,255,0.3);padding:10px;'>$searchstr</div><br>";
 
 $count = 0;
 
@@ -106,7 +118,7 @@ echo "<center>";
 
 while ($row = mysqli_fetch_assoc($result)) {
 	$count++;
-    	$authorid = $row['author_id'];
+    	$authorname = $row['name'];
 	$title = strip_tags($row['title']);
 	$description = strip_tags($row['description']);
 	$url = $row['url'];
@@ -115,20 +127,11 @@ while ($row = mysqli_fetch_assoc($result)) {
 	$views = $row['views'];
 	$thumbnail = $row['thumbnail'];   
 	$comments = $row['comments'];
+	$userpicurl = $row['pic'];
 	if($thumbnail == NULL)
 		$thumbnail = "";
 
-	$authorname = "Anonymous";
-
-	if($authorid != NULL)
-	{
-		//Authorname logic
-	}
-	
-	$neededHeight = 360;
-	$neededWidth = 200;
-	//display the view
-	create_view($neededHeight,$neededWidth,$url,$title,$description,$views,$authorname,$comments,$filesize,$frames,false);
+	create_view(360,200,$url,$title,$description,$views,$authorname,$comments,$filesize,$frames,$userpicurl,false);
 }
 mysqli_close($link);
 

@@ -530,17 +530,22 @@ function animation_from_url(url,bool1,bool2)
 	  {
 	    alert("You cannot use this application. Get IE7+, Firefox, Chrome, Opera or Safari.");
 	  }
-	xmlhttp.open("GET",url,false);
+	xmlhttp.open("GET",url,true);
+
+	xmlhttp.onload = function () {
+		var movdat = xmlhttp.responseText;
+		movdat = movdat.split('\\n');
+		//alert(movdat);
+		load_animation(movdat,bool1,bool2);
+		var wrapper = document.getElementById("animation_wrapper");
+		var str = document.getElementById("animation_wrapper_str");
+		str.innerHTML = "";
+		//plays automatically after download
+		forcechangefontsize();
+		play();
+	};
+
 	xmlhttp.send();
-
-	movdat = xmlhttp.responseText;
-
-	movdat = movdat.split('\\n');
-	load_animation(movdat,bool1,bool2);
-	var wrapper = document.getElementById("animation_wrapper");
-	var str = document.getElementById("animation_wrapper_str");
-	str.innerHTML = "Finished downloading. Click to play.";
-	str.style.color = "black";
 }
 
 //no cross orgin..
@@ -606,11 +611,95 @@ function afls()
 	animation_from_local_storeage();
 }
 
+function startthumbnail()
+{
+	document.getElementById('animation_wrapper_str').innerHTML ='';
+}
 
 function clearstart()
 {
 	document.getElementById('display_preplay').style.display = 'none';
 	document.getElementById('animation_wrapper_str').innerHTML ='';
-	play();
+}
+
+function hideui()
+{
+	var wrapper = document.getElementById('animation_win');
+	wrapper.style.height = "100%";
+	var wrapper_footer = document.getElementById('footer1');
+	wrapper_footer.style.height = "0px";
+}
+function setpreplayfunction(func)
+{
+	var wrapper = document.getElementById("display_preplay");
+	wrapper.onclick = func;
+}
+function normalplay()
+{
+	setpreplayfunction(function(){ if(donotallowplay == false){clearstart();}});
+}
+function redirect_to(url)
+{
+	setpreplayfunction(function(){window.location = url;});
+}
+
+
+var AWx = 0;
+var AWy = 0;
+//changes the fontsize dynamically.
+function forcechangefontsize()
+{
+	changefontsize((Math.round(getFullScaleFontSize())-1)+"px");
+}
+function onwindowresize()
+{
+	var Mscreen = document.getElementById("animation_win");
+	var Mwx = Mscreen.clientWidth;
+	var Mwy = Mscreen.clientHeight;
+
+	if((Mwx != AWx || AWy != Mwy) && (movx != null && movy != null))
+	{
+		AWx = Mwx;
+		AWy = Mwy;
+		
+		forcechangefontsize();
+	}
+}
+var Mcx = null;
+var Mcy = null;
+var Mfac = null;
+//Gets the Font Scale for your screensize
+function getFullScaleFontSize()
+{
+	var Mscreen = document.getElementById("animation_win");
+	var Mwx = Mscreen.clientWidth;
+	var Mwy = Mscreen.clientHeight;
+	var Mwfac = Mwx/Mwy;
+
+	//get font size 1000 measurements
+	if(Mcx == null)
+	{
+		var Mcontainer = document.getElementById("animation_testsize");
+		Mcontainer.style.fontSize = "1000px";
+		Mcontainer.innerHTML = "X";
+		Mcx = Mcontainer.clientWidth;
+		Mcy = Mcontainer.clientHeight;
+		Mfac = (movx*Mcx)/(Mcy*movy);
+	}
+	var Mfontsize = 0;
+	if(Mwfac > Mfac)
+	{
+		//frame width larger than format width
+		//-> format heigth should fit frame heigth
+		Mfontsize = (1000*Mwy)/(Mcy*(movy));
+	}
+	else
+	{
+		//frame width smaller (or equal) than format width
+		//-> format width should fit frame width
+		Mfontsize = (1000*Mwx)/(Mcx*(movx));
+	}
+
+	return Mfontsize;
 }
 

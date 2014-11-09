@@ -54,4 +54,15 @@ $command = "CREATE TABLE IF NOT EXISTS `comments` (
 
 mysqli_query($link,$command);
 
+$command =  "CREATE TABLE IF NOT EXISTS `users` (
+`id` int(11) NOT NULL,
+  `name` varchar(20) NOT NULL,
+  `password` varchar(32) NOT NULL,
+  `description` varchar(500) DEFAULT NULL,
+  `pic` varchar(20) DEFAULT NULL,
+  `lastaccessdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;";
+
+mysqli_query($link,$command);
+
 ?>

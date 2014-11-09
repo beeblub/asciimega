@@ -8,10 +8,18 @@
 //upload a file
 
 //no user stuff whatsoever
-function upload_animation_anonymous($a_title, $a_description, $a_url, $a_authkey,$a_filesize,$a_frames)
+function upload_animation($a_title, $a_description, $a_url, $a_authkey,$a_filesize,$a_frames)
 {
+	include("ref/functions.php");
+	//author id stuff
+	$id_author = 0;
+	$res = getuserid();
+	if($res != -1)
+		$id_author = $res;
+	//done
+
 	include("ref/mysql_connect.php");
-	$command = "INSERT INTO animations (id, author_id, title,description,url,filesize,frames,views,thumbnail,date) VALUES (0, NULL, '".mysqli_real_escape_string($link,$a_title)."','".mysqli_real_escape_string($link,$a_description)."','".$a_url."',".$a_filesize.",".$a_frames.",0,'',CURRENT_TIMESTAMP());";
+	$command = "INSERT INTO animations (id, author_id, title,description,url,filesize,frames,views,thumbnail,date) VALUES (0, $id_author, '".mysqli_real_escape_string($link,$a_title)."','".mysqli_real_escape_string($link,$a_description)."','".$a_url."',".$a_filesize.",".$a_frames.",0,'',CURRENT_TIMESTAMP());";
 	//echo $command;
 	$worked = true;
 	if (!mysqli_query($link,$command)) {
@@ -31,7 +39,7 @@ function upload_animation_anonymous($a_title, $a_description, $a_url, $a_authkey
 }
 
 
-function generateRandomString($length = 10) {
+function generateRandomString_upload($length = 10) {
     $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
     $randomString = '';
     for ($i = 0; $i < $length; $i++) {
@@ -67,7 +75,7 @@ if($_FILES['anim'] != null)
 			if($tlen > 2 && $tlen <= 30 && $dlen > 2 && $dlen <= 300)
 			{
 				//we generate a secret
-				$secret = generateRandomString(5);
+				$secret = generateRandomString_upload(5);
 				//modify it
 				$secret = $secret.substr(hash("md5",$title.$description.$secret),0,5);
 
@@ -116,9 +124,9 @@ if($_FILES['anim'] != null)
 					{
 						//we generate a name for the new animation
 						$numframes = $tmpsum/$heigth;
-						$randomfilename = generateRandomString(5);
+						$randomfilename = generateRandomString_upload(5);
 						while (file_exists("files/" . $randomfilename)) {
-						      $randomfilename = generateRandomString(strlen($randomfilename)+1);}
+						      $randomfilename = generateRandomString_upload(strlen($randomfilename)+1);}
 					
 					      //now we upload the animation 
 
@@ -127,7 +135,7 @@ if($_FILES['anim'] != null)
 						{
 					      		//echo "Stored in: " . "files/" . $randomfilename."<br>";
 							$secret = $randomfilename."_".$secret;
-							if(upload_animation_anonymous($title, $description, $randomfilename,$secret,$size,$numframes))
+							if(upload_animation($title, $description, $randomfilename,$secret,$size,$numframes))
 							{
 								//yeaaay is uploaded!
 								echo "<h1>Congratulations!</h1><br>";

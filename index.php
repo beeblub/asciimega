@@ -17,12 +17,25 @@ error_reporting(E_ERROR);
 html{margin: 0;width:100%;height:100%;}
 body{margin: 0;width:100%;height:100%;overflow-x:hidden;overflow-y:scoll; font-family: 'Ubuntu', sans-serif;}
 
+/*FANCY SCALED IMAGES!*/
+.nosmooth { 
+    -webkit-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+    image-rendering: optimizeSpeed;             /* DISABLE SMOOTHING - WE WANT SPEED */
+    image-rendering: -moz-crisp-edges;          /* Firefox                        */
+    image-rendering: -o-crisp-edges;            /* Opera                          */         /* Opera                          */
+    image-rendering: -webkit-optimize-contrast; /* Chrome (and eventually Safari) */
+    image-rendering: optimize-contrast;         /* CSS3 Proposed                  */
+    -ms-interpolation-mode: nearest-neighbor;   /* IE8+                           */
+}
+
+
 #reportdiv
 {
  	background-color:#bb0011;
 }
 
-#comment
+.comment
 {
 	background-color:rgba(255,255,255,0.6);
 	padding:10px;
@@ -199,6 +212,54 @@ function setonlineusers(numonline)
 {
 	document.getElementById("onlineusers").innerHTML = numonline;//"Users Online: "+
 	document.getElementById("onlineusersScreen").innerHTML = numonline;
+=======
+.logo{
+z-index:5;position:absolute;left:0px;top:0px;width:150px;height:150px;
+}
+
+</style>
+</head>
+<body id="master" style="min-width: 750px;">
+
+<noscript style="background-color: #171717; height: 100%; width: 100%; position: absolute; z-index: 1000; margin-left: -50%; margin-top: 0%;">
+	<p>Javascript is not enabled. Please enable javascript before you use this site. </p><a style="color: #4aadd0;" class="hoverText" href="http://www.enable-javascript.com/" target="_blank">diesen</a><p></p>
+</noscript>
+<!-- head -->
+<div style="left:0px;top:0px;width:100%;height:70px;background-color:black;opacity:0.7;">
+<div id="navigationBar" height="70px">
+<table border="0" style="color:white;width:100%;text-align:center;font-size:35px; height: 50px; padding-top: 20px;">
+<tr>
+<td width="25%">
+</td>
+<td width="25%">
+<i><a style="text-decoration:none;color:white;" class='naviItem' href="index.php?p=w">Watch</a></i>
+</td>
+<td width="25%" style="color:orange;">
+<i><a style="text-decoration:none;color:orange;" class='naviItem' href="index.php?p=e">Create</a></i>
+</td>
+<td width="20%">
+<div style="font-size:15px;" class='naviItem' onclick="window.location = 'me.php';" id="onlineusers">
+<p title="view details" >Users Online: 0</p>
+</div>
+</td>
+<td width="5%">
+<div style="font-size:15px;padding:5px;" class='naviItem' onclick="window.location = 'index?p=login';">
+Account
+</div>
+</td>
+</tr>
+</table>
+
+</div>
+</div>
+
+<script>
+function setonlineusers(name,numonline)
+{
+	if(name != "")
+	document.getElementById("onlineusers").innerHTML = "Logged in as: '"+name+"'<br>Users Online: "+numonline;
+	else
+	document.getElementById("onlineusers").innerHTML = "You are anonymous. <br> Users Online: "+numonline;
 }
 function openNavi(event, divName){
 	divCrnt = document.getElementById(divName);
@@ -259,7 +320,7 @@ function dosearch()
 	}
 	if(lastvalue == "name")
 	{
-		window.location = "index?p=w&o=n&t="+document.getElementById("searchforname_input").value;
+		window.location = "index?p=w&o=t&t="+document.getElementById("searchforname_input").value;
 	}
 }
 </script>
@@ -315,16 +376,21 @@ if($GETp)
 	$page = $GETp;
 }
 
-include 'tracker.php';
+include 'ref/tracker.php';
 
-echo "<script>setonlineusers(".count_users().");</script>";
+include_once 'ref/functions.php';
+$name = "''";
+if(getuserid() != -1)
+	$name = "'".getusername()."'";
+
+echo "<script>setonlineusers($name,".count_users().");</script>";
 
 if(($page == "" || $page == "w"))
 {	
 	echo "<title>Watch</title>";
 	echo "<script>var single = false;</script>";
 	echo "<script>openNavi('-1','watchNavigation');</script>";
-	include("search_style.php");
+	include("ref/search_style.php");
 }
 else if ($page == "e")
 {
@@ -336,14 +402,26 @@ else if ($page == "log")
 	echo "<title>Users</title>";
 	echo "<script>var single = false;</script>";
 	echo "<center><div class='userslog'>";
-	include("userslog.php");
+	include("ref/userslog.php");
 	echo "</div></center>";
 }
 else if($page == "an")
 {
 	echo "<script>var single = true;</script>";
 	//echo "Hello ".$_SERVER['QUERY_STRING'];
-	include("single.php");
+	include("ref/single.php");
+}
+else if($page == "usr")
+{
+	echo "<script>var single = false;</script>";
+	echo "<title>".$_GET['n']."</title>";
+	include("ref/viewprofile.php");
+}
+else if($page == "login")
+{
+	echo "<script>var single = false;</script>";
+	echo "<center><div class='userslog'><iframe frameborder = '0' style= 'position:relative;width:500px;height:100%; 'src='login.php'></iframe>";
+	echo "</div></center>";
 }
 ?>
 </div>

@@ -9,5 +9,10 @@ nonpublic/*
 ref/mysql_connect.php
 ref/config.php
 
+ppic/*
+!ppic/a.png
+!ppic/error
+
 files/*
 !files/.gitkeep
+!files/t.template

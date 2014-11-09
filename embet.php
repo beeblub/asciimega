@@ -190,7 +190,7 @@ window.onscroll = function () { window.scrollTo(0, 0); };
 				<div id="animation_win_c">
 					<center>
 					<div id = "animation_wrapper_str">
-						Downloading Animation..
+						Preparing stuff for you :)
 						<noscript>
 						You don't have javascript enabled.  You can not play animations.
 						</noscript>
@@ -234,7 +234,7 @@ window.onscroll = function () { window.scrollTo(0, 0); };
 		</div>
 	</div>
 
-	<div id="display_preplay" onclick="if(donotallowplay == false){clearstart();}">
+	<div id="display_preplay">
 	</div>
 
 <?php
@@ -249,21 +249,33 @@ if($animationname == "")
 //if name is "%local", then we want to play the locally saved animation
 else if($animationname == "%local")
 {
-	echo "<script>afls();clearstart();</script>";
+	echo "<script>afls();clearstart();play();</script>";
 }
 else
 {
 	//we check whether there is a point in the name
 	$pos = strpos(".",$animationname);
-	if($pos == false)
+	if($pos == false && file_exists("files/".$animationname))
 	{
-		//check whether file exists
-		if(file_exists("files/".$animationname))
-		{
-			//FILE EXISTS
+		//FILE EXISTS		
 
-			//start animation
-			echo "<script>afu2('".$animationname."');</script>";
+		$animationname_template = "t.$animationname";
+		if(file_exists("files/".$animationname_template) == false)
+			$animationname_template = "t.template";
+
+		$ispreview = $_GET['preview'];
+		// 0 = false, 1 = true
+		
+		//we want the thumbnail instead of the animations
+		if($ispreview == '1')
+		{
+			echo "<script>afu2('".$animationname_template."');</script>";
+			echo "<script>startthumbnail();hideui();redirect_to('embet?a=$animationname&o=ap');</script>";
+		}
+		else
+		{
+			//we want the animation
+			echo "<script>afu2('".$animationname."');normalplay();</script>";
 
 			//count the view:
 			include("ref/mysql_connect.php");
@@ -279,8 +291,6 @@ else
 				echo "<script>clearstart();</script>";
 			}
 		}
-		else
-			echo $eerror;
 	}
 	else
 	echo $eerror;
@@ -291,60 +301,6 @@ else
 </section>
 
 <script>
-var AWx = 0;
-var AWy = 0;
-//changes the fontsize dynamically.
-function onwindowresize()
-{
-	var Mscreen = document.getElementById("animation_win");
-	var Mwx = Mscreen.clientWidth;
-	var Mwy = Mscreen.clientHeight;
-
-	if(Mwx != AWx || AWy != Mwy)
-	{
-		AWx = Mwx;
-		AWy = Mwy;
-		
-		changefontsize((Math.round(getFullScaleFontSize())-1)+"px");
-	}
-}
-var Mcx = null;
-var Mcy = null;
-var Mfac = null;
-//Gets the Font Scale for your screensize
-function getFullScaleFontSize()
-{
-	var Mscreen = document.getElementById("animation_win");
-	var Mwx = Mscreen.clientWidth;
-	var Mwy = Mscreen.clientHeight;
-	var Mwfac = Mwx/Mwy;
-
-	//get font size 1000 measurements
-	if(Mcx == null)
-	{
-		var Mcontainer = document.getElementById("animation_testsize");
-		Mcontainer.style.fontSize = "1000px";
-		Mcontainer.innerHTML = "X";
-		Mcx = Mcontainer.clientWidth;
-		Mcy = Mcontainer.clientHeight;
-		Mfac = (movx*Mcx)/(Mcy*movy);
-	}
-	var Mfontsize = 0;
-	if(Mwfac > Mfac)
-	{
-		//frame width larger than format width
-		//-> format heigth should fit frame heigth
-		Mfontsize = (1000*Mwy)/(Mcy*(movy));
-	}
-	else
-	{
-		//frame width smaller (or equal) than format width
-		//-> format width should fit frame width
-		Mfontsize = (1000*Mwx)/(Mcx*(movx));
-	}
-
-	return Mfontsize;
-}
 window.onresize=  function(){if(chfontsize_valid() == false)onwindowresize();};
 //we need to initialize the fontsize first
 onwindowresize();
