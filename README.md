@@ -55,5 +55,7 @@ Contributors so far:
 - [tomatenbrei](https://github.com/tomatenbrei)
 - [beeblub](https://github.com/beeblub)
 
+- md5.js Copyright (c) 1996 Henri Torgemane, modified by Ralf Mieke
+
 
 
